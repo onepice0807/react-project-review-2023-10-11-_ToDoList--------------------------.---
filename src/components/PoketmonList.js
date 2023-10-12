@@ -1,8 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
 import "./PoketmonList.css";
 import PoketmonObject from "./PoketmonObject";
 
-const PoketmonList = ({ property1, property2, imglink, title, content }) => {
+const PoketmonList = ({ poketmon, onUpdate, onDelete }) => {
+  const [searchWord, setSearchWord] = useState("");
+  const onChangeSearch = (e) => {
+    setSearchWord(e.target.value);
+  };
+
+  const getSearchResult = () => {
+    return searchWord === ""
+      ? poketmon
+      : poketmon.filter((poketmonser) =>
+          poketmonser.title.includes(searchWord),
+        );
+  };
   return (
     <div>
       <div className="PoketmonList">
@@ -11,15 +23,18 @@ const PoketmonList = ({ property1, property2, imglink, title, content }) => {
           type="text"
           placeholder="검색할 포켓몬은 누구인가요?"
           className="searchBar"
+          onChange={onChangeSearch}
+          value={searchWord}
         />
         <div className="List_wrapper">
-          <PoketmonObject
-            property1={property1}
-            property2={property2}
-            imglink={imglink}
-            title={title}
-            content={content}
-          />
+          {getSearchResult().map((poketmonser) => (
+            <PoketmonObject
+              key={poketmonser.id}
+              {...poketmonser}
+              onUpdate={onUpdate}
+              onDelete={onDelete}
+            />
+          ))}
         </div>
       </div>
     </div>

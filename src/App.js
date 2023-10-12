@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useReducer, useRef, useState } from "react";
 import "./App.css";
 import Header from "./components/Header";
 import PoketmonEditor from "./components/PoketmonEditor";
@@ -8,6 +8,7 @@ const mockupPoketmon = [
   // 더미 데이터를 만든다
   {
     id: 0,
+    isDone: false,
     property1: "풀",
     property2: "독",
     imglink: "https://data1.pokemonkorea.co.kr/newdata/pokedex/full/000101.png",
@@ -18,6 +19,7 @@ const mockupPoketmon = [
   },
   {
     id: 1,
+    isDone: true,
     property1: "풀",
     property2: "독",
     imglink: "https://data1.pokemonkorea.co.kr/newdata/pokedex/full/000201.png",
@@ -28,6 +30,7 @@ const mockupPoketmon = [
   },
   {
     id: 2,
+    isDone: false,
     property1: "풀",
     property2: "독",
     imglink: "https://data1.pokemonkorea.co.kr/newdata/pokedex/full/000301.png",
@@ -50,10 +53,28 @@ function App() {
       imglink: imglink,
       title: title,
       content: content,
+      isDone: false,
       createdDate: new Date().getTime(),
     };
     setPoketmon([newPoketmon, ...poketmon]); // 스프레드 연산자를 통해 불변성을 지키며 새로운 배열 setPoketmon 할당
     idRef.current += 1;
+  };
+
+  const onUpdate = (id) => {
+    console.log("수정 작업 해야 함!!!");
+
+    setPoketmon(
+      poketmon.map((poketmonser) =>
+        poketmonser.id === id
+          ? { ...poketmonser, isDone: !poketmonser.isDone }
+          : poketmonser,
+      ),
+    );
+  };
+
+  const onDelete = (id) => {
+    console.log(`${id}번의 포켓몬을 삭제합니다!!!`);
+    setPoketmon(poketmon.filter((poketmonser) => poketmonser.id !== id));
   };
 
   return (
@@ -65,16 +86,12 @@ function App() {
         <PoketmonEditor onCreate={onCreate} />
       </div>
       <div>
-        {mockupPoketmon.map((Poketmon) => (
-          <PoketmonList
-            key={Poketmon.id}
-            property1={Poketmon.property1}
-            property2={Poketmon.property2}
-            imglink={Poketmon.imglink}
-            title={Poketmon.title}
-            content={Poketmon.content}
-          />
-        ))}
+        <PoketmonList
+          poketmon={poketmon}
+          onUpdate={onUpdate}
+          onDelete={onDelete}
+        />{" "}
+        {/* props로 todos, onUpdate를 내려줌 */}
       </div>
     </div>
   );
