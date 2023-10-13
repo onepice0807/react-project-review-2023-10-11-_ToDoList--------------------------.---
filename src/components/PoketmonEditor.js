@@ -29,13 +29,7 @@ const PoketmonEditor = ({ onCreate }) => {
       return;
     }
     setIsError(false);
-    onCreate(
-      content.property1,
-      content.property2,
-      content.imglink,
-      content.title,
-      content.content,
-    );
+    onCreate(content);
     setContent("");
   };
 
